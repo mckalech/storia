@@ -1,0 +1,12 @@
+{
+  "name": "storia",
+  "version": "1.0.0",
+  "authors": [
+    "mckalech <mckalech@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "~3.3.5"
+  }
+}

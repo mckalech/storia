@@ -1,0 +1,17 @@
+{
+  "name": "storia",
+  "version": "1.0.0",
+  "dependencies": {
+    "browser-cookies": "^1.0.8",
+    "classnames": "^1.2.1",
+    "express": "latest",
+    "grunt": "^0.4.5",
+    "grunt-browserify": "^3.7.0",
+    "grunt-contrib-compass": "^1.0.3",
+    "grunt-contrib-watch": "latest",
+    "grunt-react": "^0.12.2",
+    "jquery": "^2.1.4",
+    "react": "^0.13.3",
+    "bower": "latest"
+  }
+}
