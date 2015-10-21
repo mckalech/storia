@@ -29177,7 +29177,7 @@ var Feed = React.createClass({displayName: "Feed",
 			});
 			return (
 				React.createElement("div", {className: "row"}, 
-					React.createElement("div", {className: "b-feed col-md-6"}, 
+					React.createElement("div", {className: "b-feed col-md-5"}, 
 						feed
 					)
 				)
@@ -29191,13 +29191,19 @@ var Feed = React.createClass({displayName: "Feed",
 });
 module.exports = Feed;
 },{"./post":162,"React":155,"jQuery":158}],162:[function(require,module,exports){
-var React = require('React');
+var React = require('React'),
+	$ = require('jQuery');
 
 var Post = React.createClass({displayName: "Post",
 	getInitialState: function(){
 		return {
-			likes: this.props.data.stats.likes
+			likesBtnBlocked: false,
+			liked: this.props.data.context.liked,
+			likesCount: this.props.data.stats.likes
 		};
+	},
+	componentDidMount: function(){
+		this.url = 'https://storia.me/api/core/stories/'+this.props.data.storyId+'/moments/'+this.props.data.id+'/like';
 	},
 	getImage: function(){
 		var atts = this.props.data.attachments,
@@ -29217,11 +29223,54 @@ var Post = React.createClass({displayName: "Post",
 
 	},
 	handleLikeClick:function(){
-		this.setState({
-			likes: this.state.likes+1
-		})
+		if(!this.state.likesBtnBlocked){
+			this.setState({likesBtnBlocked: true});
+			if(this.state.liked){
+				this.deleteLike();
+			}else{
+				this.postLike();
+			}
+		}
+	},
+	postLike:function(){
+		var that = this;
+		$.ajax({
+			type:'POST',
+			url:that.url,
+			xhrFields: {
+				withCredentials: true
+			},
+			success:function(res){
+				that.setState({
+					likesBtnBlocked: false,
+					liked:true,
+					likesCount:that.state.likesCount+1
+				});
+			}
+		});
+	},
+	deleteLike:function(){
+		var that = this;
+		$.ajax({
+			type:'DELETE',
+			url:that.url,
+			xhrFields: {
+				withCredentials: true
+			},
+			success:function(res){
+				that.setState({
+					likesBtnBlocked: false,
+					liked:false,
+					likesCount:that.state.likesCount-1
+				});
+			}
+		});
 	},
 	render : function(){
+		var likedText = '';
+		if(!this.state.liked){
+			likedText = 'not ';
+		}
 		return(
 			React.createElement("div", {className: "panel panel-info"}, 
 				React.createElement("div", {className: "panel-heading"}, 
@@ -29231,10 +29280,10 @@ var Post = React.createClass({displayName: "Post",
 					React.createElement("div", null, React.createElement("b", null, this.props.data.storyTitle), " ", React.createElement("i", null, this.props.data.owner.name)), 
 					React.createElement("div", null, this.getImage())
 				), 
-				React.createElement("div", {className: "panel-footer", onClick: this.handleLikeClick}, this.state.likes, " likes")
+				React.createElement("div", {className: "panel-footer", onClick: this.handleLikeClick}, this.state.likesCount, " likes, you ", likedText, " liked")
 			)
 		)
 	}
 });
 module.exports = Post;
-},{"React":155}]},{},[159]);
+},{"React":155,"jQuery":158}]},{},[159]);

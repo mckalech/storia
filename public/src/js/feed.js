@@ -33,7 +33,7 @@ var Feed = React.createClass({
 			});
 			return (
 				<div className="row">
-					<div className="b-feed col-md-6">
+					<div className="b-feed col-md-5">
 						{feed}
 					</div>
 				</div>
