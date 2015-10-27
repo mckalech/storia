@@ -29123,10 +29123,10 @@ var Box = React.createClass({displayName: "Box",
 			data:JSON.stringify(loginData),
 			contentType:'application/json',
 			success:function(data){
-				that.setState({authorized:true});
-				cookies.set('SSID', data.sessionId);
 				cookies.set('userId', data.userId);
+				cookies.set('SSID', data.sessionId);
 				cookies.set('accountId', data.accountId);
+				that.setState({authorized:true});
 			}
 		})
 	},
@@ -29144,7 +29144,8 @@ module.exports = Box;
 },{"./feed":161,"React":155,"browser-cookies":156,"jQuery":158}],161:[function(require,module,exports){
 var React = require('React'),
 	$ = require('jQuery'),
-	Post = require('./post');
+	Post = require('./post'),
+	cookies = require('browser-cookies');
 
 var Feed = React.createClass({displayName: "Feed",
 	getInitialState: function(){
@@ -29153,11 +29154,17 @@ var Feed = React.createClass({displayName: "Feed",
 		};
 	},
 	componentDidMount: function(){
-		var that = this;
+		var that = this,
+			headers = [];
+		headers.push("SSID="+cookies.get('SSID'));
+		headers.push("userId="+cookies.get('userId'));
+		headers.push("accountId="+cookies.get('accountId'));
+
 		$.ajax({
 			url:'https://storia.me/api/feed/content',
-			xhrFields: {
-				withCredentials: true
+
+			data:{
+				token:''
 			},
 			success:function(data){
 				that.setState({
@@ -29166,6 +29173,20 @@ var Feed = React.createClass({displayName: "Feed",
 				});
 			}
 		});
+		//fetch('https://storia.me/api/feed/content',{
+		//	mode: 'cors',
+		//	credentials: 'include'
+		//}).then(function(response) {
+		//	// Convert to JSON
+		//	return response.json();
+		//})
+		//.then(function(data){
+		//	that.setState({
+		//		loaded:true,
+		//		posts:data.items
+		//	});
+		//});
+
 	},
 	render : function(){
 		if(this.state.loaded){
@@ -29190,7 +29211,7 @@ var Feed = React.createClass({displayName: "Feed",
 	}
 });
 module.exports = Feed;
-},{"./post":162,"React":155,"jQuery":158}],162:[function(require,module,exports){
+},{"./post":162,"React":155,"browser-cookies":156,"jQuery":158}],162:[function(require,module,exports){
 var React = require('React'),
 	$ = require('jQuery');
 

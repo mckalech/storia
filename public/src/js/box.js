@@ -23,10 +23,10 @@ var Box = React.createClass({
 			data:JSON.stringify(loginData),
 			contentType:'application/json',
 			success:function(data){
-				that.setState({authorized:true});
-				cookies.set('SSID', data.sessionId);
 				cookies.set('userId', data.userId);
+				cookies.set('SSID', data.sessionId);
 				cookies.set('accountId', data.accountId);
+				that.setState({authorized:true});
 			}
 		})
 	},

@@ -40,26 +40,15 @@ var Post = React.createClass({
 		}
 	},
 	postLike:function(){
-		var that = this;
-		$.ajax({
-			type:'POST',
-			url:that.url,
-			xhrFields: {
-				withCredentials: true
-			},
-			success:function(res){
-				that.setState({
-					likesBtnBlocked: false,
-					liked:true,
-					likesCount:that.state.likesCount+1
-				});
-			}
-		});
+		this.likeReq('POST', 1);
 	},
 	deleteLike:function(){
+		this.likeReq('DELETE', -1);
+	},
+	likeReq:function(type, incr){
 		var that = this;
 		$.ajax({
-			type:'DELETE',
+			type:type,
 			url:that.url,
 			xhrFields: {
 				withCredentials: true
@@ -68,7 +57,7 @@ var Post = React.createClass({
 				that.setState({
 					likesBtnBlocked: false,
 					liked:false,
-					likesCount:that.state.likesCount-1
+					likesCount:that.state.likesCount+incr
 				});
 			}
 		});

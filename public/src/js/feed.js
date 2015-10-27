@@ -1,6 +1,7 @@
 var React = require('React'),
 	$ = require('jQuery'),
-	Post = require('./post');
+	Post = require('./post'),
+	cookies = require('browser-cookies');
 
 var Feed = React.createClass({
 	getInitialState: function(){
@@ -10,10 +11,12 @@ var Feed = React.createClass({
 	},
 	componentDidMount: function(){
 		var that = this;
+
 		$.ajax({
 			url:'https://storia.me/api/feed/content',
-			xhrFields: {
-				withCredentials: true
+
+			data:{
+				token:''
 			},
 			success:function(data){
 				that.setState({
@@ -22,6 +25,7 @@ var Feed = React.createClass({
 				});
 			}
 		});
+
 	},
 	render : function(){
 		if(this.state.loaded){
