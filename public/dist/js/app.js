@@ -30398,46 +30398,15 @@ var Feed = React.createClass({displayName: "Feed",
 	}
 });
 module.exports = Feed;
-},{"./modal":340,"./post":341,"React":156,"jQuery":159}],340:[function(require,module,exports){
-var React = require('React'),
-	M = require('react-modal-bootstrap'),
-	$ = require('jQuery'),
-	Modal = M.Modal,
-	ModalClose = M.ModalClose;
+},{"./modal":341,"./post":342,"React":156,"jQuery":159}],340:[function(require,module,exports){
+var React = require('React');
 
-var Mod = React.createClass({displayName: "Mod",
-	getInitialState:function(){
-		return {
-			text: "",
-			attachments: []
-		};
-	},
-	hideModal: function(){
-		this.props.hideModal();
-	},
-	componentWillReceiveProps:function(nextProps){
-		this.setState({
-			text:'загрузка',
-			attachments:[]
-		});
-		$.ajax({
-			url: nextProps.data.url,
-			method:'GET',
-			xhrFields: {
-				withCredentials: true
-			},
-			success:function(data){
-				this.setState({
-					text:'a',
-					attachments:data.moment.attachments
-				});
-			}.bind(this)
-		});
-	},
-	getImage: function(atts){
-		var url;
+var Image = React.createClass({displayName: "Image",
+	render: function(){
+		var url,
+			atts = this.props.attachments || [];
 		if(!atts.length){
-			return 'No Image';
+			return false;
 		}
 		var images = atts.filter(function(att, i){
 			return att.file.title.match(/\d+/g) ? false : true;
@@ -30447,9 +30416,55 @@ var Mod = React.createClass({displayName: "Mod",
 		}else{
 			url = atts[atts.length-1].file.path;
 		}
-		return React.createElement("img", {src: url, className: "img-rounded b-post__image"})
+		return(
+			React.createElement("div", null, React.createElement("img", {src: url, className: "img-rounded b-post__image"}))
+		)
+	}
+});
+
+module.exports = Image;
+},{"React":156}],341:[function(require,module,exports){
+var React = require('React'),
+	M = require('react-modal-bootstrap'),
+	$ = require('jQuery'),
+	Modal = M.Modal,
+	Image = require('./image'),
+	ModalClose = M.ModalClose;
+
+var Mod = React.createClass({displayName: "Mod",
+	getInitialState:function(){
+		return {
+			attachments: []
+		};
+	},
+	hideModal: function(){
+		this.props.hideModal();
+	},
+	componentWillReceiveProps:function(nextProps){
+		if(nextProps.isOpen == false){
+			return;
+		}else{
+			this.setState({
+				attachments:[]
+			});
+			$.ajax({
+				url: nextProps.data.url,
+				method:'GET',
+				xhrFields: {
+					withCredentials: true
+				},
+				success:function(data){
+					this.setState({
+						storyTitle: data.moment.storyTitle,
+						owner: data.moment.owner.name,
+						attachments: data.moment.attachments
+					});
+				}.bind(this)
+			});
+		}
 
 	},
+
 	render: function(){
 		return(
 			React.createElement(Modal, {isOpen: this.props.isOpen, onRequestHide: this.hideModal}, 
@@ -30458,16 +30473,11 @@ var Mod = React.createClass({displayName: "Mod",
 					React.createElement("h4", {className: "modal-title"}, this.props.data.title)
 				), 
 				React.createElement("div", {className: "modal-body"}, 
-					this.state.text, 
-					React.createElement("div", null, this.getImage(this.state.attachments))
-				), 
-				React.createElement("div", {className: "modal-footer"}, 
-					React.createElement("button", {className: "btn btn-default", onClick: this.hideModal}, 
-						"Close"
+					React.createElement("div", null, 
+						"История: ", React.createElement("b", null, this.state.storyTitle)
 					), 
-					React.createElement("button", {className: "btn btn-primary"}, 
-						"Save changes"
-					)
+					"Автор: ", React.createElement("i", null, this.state.owner), 
+					React.createElement(Image, {attachments: this.state.attachments})
 				)
 			)
 		)
@@ -30475,9 +30485,10 @@ var Mod = React.createClass({displayName: "Mod",
 });
 
 module.exports = Mod;
-},{"React":156,"jQuery":159,"react-modal-bootstrap":163}],341:[function(require,module,exports){
+},{"./image":340,"React":156,"jQuery":159,"react-modal-bootstrap":163}],342:[function(require,module,exports){
 var React = require('React'),
 	$ = require('jQuery'),
+	Image = require('./image'),
 	classNames = require('classNames');
 
 var Post = React.createClass({displayName: "Post",
@@ -30490,23 +30501,6 @@ var Post = React.createClass({displayName: "Post",
 	},
 	componentDidMount: function(){
 		this.url = 'https://storia.me/api/core/stories/'+this.props.data.storyId+'/moments/'+this.props.data.id+'/like';
-	},
-	getImage: function(){
-		var atts = this.props.data.attachments,
-			url;
-		if(!atts.length){
-			return 'No Image';
-		}
-		var images = atts.filter(function(att, i){
-			return att.file.title.match(/\d+/g) ? false : true;
-		});
-		if(images.length){
-			url = images[images.length-1].file.path;
-		}else{
-			url = atts[atts.length-1].file.path;
-		}
-		return React.createElement("img", {src: url, className: "img-rounded b-post__image"})
-
 	},
 	handleLikeClick:function(){
 		if(!this.state.likesBtnBlocked){
@@ -30551,7 +30545,7 @@ var Post = React.createClass({displayName: "Post",
 			}
 		});
 	},
-	hadleStoryTitleClick: function(){
+	handleStoryTitleClick: function(){
 		var url = "https://storia.me/api/core/stories/"+this.props.data.storyId+'/moments/'+this.props.data.id;
 		this.props.showModal(url, this.props.data.title);
 	},
@@ -30564,14 +30558,24 @@ var Post = React.createClass({displayName: "Post",
 		var style={
 			backgroundPosition : ""
 		};
-		var headingPanel = this.props.data.title ? (React.createElement("div", {className: "panel-heading"}, React.createElement("h3", {className: "panel-title"}, this.props.data.title))): "";
+		var headingPanel = "";
+		if (this.props.data.title) {
+			headingPanel = (
+				React.createElement("div", {className: "panel-heading", onClick: this.handleStoryTitleClick}, 
+					React.createElement("h3", {className: "panel-title"}, this.props.data.title)
+				)
+			);
+		}
 		if (!this.state.liked) {style.backgroundPosition = 'left';}
 		return(
 			React.createElement("div", {className: "panel panel-info"}, 
 				headingPanel, 
-				React.createElement("div", {className: "panel-body"}, 
-					React.createElement("div", null, React.createElement("b", {onClick: this.hadleStoryTitleClick}, this.props.data.storyTitle), " ", React.createElement("i", null, this.props.data.owner.name)), 
-					React.createElement("div", null, this.getImage())
+				React.createElement("div", {className: "panel-body", onClick: this.handleStoryTitleClick}, 
+					React.createElement("div", null, 
+						"История: ", React.createElement("b", null, this.props.data.storyTitle)
+					), 
+					"Автор: ", React.createElement("i", null, this.props.data.owner.name), 
+					React.createElement(Image, {attachments: this.props.data.attachments})
 				), 
 				React.createElement("div", {className: "panel-footer"}, 
 					React.createElement("div", {className: classes, style: style, onClick: this.handleLikeClick}), 
@@ -30582,4 +30586,4 @@ var Post = React.createClass({displayName: "Post",
 	}
 });
 module.exports = Post;
-},{"React":156,"classNames":157,"jQuery":159}]},{},[337]);
+},{"./image":340,"React":156,"classNames":157,"jQuery":159}]},{},[337]);

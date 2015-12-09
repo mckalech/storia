@@ -1,5 +1,6 @@
 var React = require('React'),
 	$ = require('jQuery'),
+	Image = require('./image'),
 	classNames = require('classNames');
 
 var Post = React.createClass({
@@ -12,23 +13,6 @@ var Post = React.createClass({
 	},
 	componentDidMount: function(){
 		this.url = 'https://storia.me/api/core/stories/'+this.props.data.storyId+'/moments/'+this.props.data.id+'/like';
-	},
-	getImage: function(){
-		var atts = this.props.data.attachments,
-			url;
-		if(!atts.length){
-			return 'No Image';
-		}
-		var images = atts.filter(function(att, i){
-			return att.file.title.match(/\d+/g) ? false : true;
-		});
-		if(images.length){
-			url = images[images.length-1].file.path;
-		}else{
-			url = atts[atts.length-1].file.path;
-		}
-		return <img src={url} className="img-rounded b-post__image"/>
-
 	},
 	handleLikeClick:function(){
 		if(!this.state.likesBtnBlocked){
@@ -73,7 +57,7 @@ var Post = React.createClass({
 			}
 		});
 	},
-	hadleStoryTitleClick: function(){
+	handleStoryTitleClick: function(){
 		var url = "https://storia.me/api/core/stories/"+this.props.data.storyId+'/moments/'+this.props.data.id;
 		this.props.showModal(url, this.props.data.title);
 	},
@@ -86,14 +70,24 @@ var Post = React.createClass({
 		var style={
 			backgroundPosition : ""
 		};
-		var headingPanel = this.props.data.title ? (<div className="panel-heading"><h3 className="panel-title">{this.props.data.title}</h3></div>): "";
+		var headingPanel = "";
+		if (this.props.data.title) {
+			headingPanel = (
+				<div className="panel-heading" onClick={this.handleStoryTitleClick}>
+					<h3 className="panel-title">{this.props.data.title}</h3>
+				</div>
+			);
+		}
 		if (!this.state.liked) {style.backgroundPosition = 'left';}
 		return(
 			<div className="panel panel-info">
 				{headingPanel}
-				<div className="panel-body">
-					<div><b onClick={this.hadleStoryTitleClick}>{this.props.data.storyTitle}</b> <i>{this.props.data.owner.name}</i></div>
-					<div>{this.getImage()}</div>
+				<div className="panel-body" onClick={this.handleStoryTitleClick}>
+					<div>
+						История: <b>{this.props.data.storyTitle}</b>
+					</div>
+					Автор: <i>{this.props.data.owner.name}</i>
+					<Image attachments={this.props.data.attachments} />
 				</div>
 				<div className="panel-footer" >
 					<div className={classes} style={style} onClick={this.handleLikeClick}></div>
