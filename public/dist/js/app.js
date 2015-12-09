@@ -29118,14 +29118,14 @@ var Box = React.createClass({displayName: "Box",
 		};
 		$.ajax({
 			url: 'https://storia.me/api/acl/auth/Selfish/test_task@example.com',
-			type:'POST',
+			method:'POST',
             dataType:"json",
 			data:JSON.stringify(loginData),
 			contentType:'application/json',
-			success:function(data){
-				cookies.set('userId', data.userId);
-				cookies.set('SSID', data.sessionId);
-				cookies.set('accountId', data.accountId);
+			xhrFields: {
+				withCredentials: true
+			},
+			success:function(){
 				that.setState({authorized:true});
 			}
 		})
@@ -29141,6 +29141,7 @@ var Box = React.createClass({displayName: "Box",
 	}
 });
 module.exports = Box;
+
 },{"./feed":161,"React":155,"browser-cookies":156,"jQuery":158}],161:[function(require,module,exports){
 var React = require('React'),
 	$ = require('jQuery'),
@@ -29154,17 +29155,12 @@ var Feed = React.createClass({displayName: "Feed",
 		};
 	},
 	componentDidMount: function(){
-		var that = this,
-			headers = [];
-		headers.push("SSID="+cookies.get('SSID'));
-		headers.push("userId="+cookies.get('userId'));
-		headers.push("accountId="+cookies.get('accountId'));
-
+		var that = this;
 		$.ajax({
 			url:'https://storia.me/api/feed/content',
-
-			data:{
-				token:''
+			method:'GET',
+			xhrFields: {
+				withCredentials: true
 			},
 			success:function(data){
 				that.setState({
@@ -29173,19 +29169,6 @@ var Feed = React.createClass({displayName: "Feed",
 				});
 			}
 		});
-		//fetch('https://storia.me/api/feed/content',{
-		//	mode: 'cors',
-		//	credentials: 'include'
-		//}).then(function(response) {
-		//	// Convert to JSON
-		//	return response.json();
-		//})
-		//.then(function(data){
-		//	that.setState({
-		//		loaded:true,
-		//		posts:data.items
-		//	});
-		//});
 
 	},
 	render : function(){
@@ -29243,55 +29226,48 @@ var Post = React.createClass({displayName: "Post",
 		return React.createElement("img", {src: url, className: "img-rounded b-post__image"})
 
 	},
-	handleLikeClick:function(){
+	handleLikeClick:function(e){
+		$this = $(e.target);
 		if(!this.state.likesBtnBlocked){
 			this.setState({likesBtnBlocked: true});
+			$this.css("background-position","");
 			if(this.state.liked){
 				this.deleteLike();
+				$this.removeClass("heartAnimation").removeClass("active");
+				$this.css("background-position","left");
+
 			}else{
 				this.postLike();
+				$this.addClass("heartAnimation").addClass("active");
 			}
 		}
 	},
 	postLike:function(){
-		var that = this;
-		$.ajax({
-			type:'POST',
-			url:that.url,
-			xhrFields: {
-				withCredentials: true
-			},
-			success:function(res){
-				that.setState({
-					likesBtnBlocked: false,
-					liked:true,
-					likesCount:that.state.likesCount+1
-				});
-			}
-		});
+		this.likeReq('POST', 1);
 	},
 	deleteLike:function(){
+		this.likeReq('DELETE', -1);
+	},
+	likeReq:function(type, incr){
 		var that = this;
+		
 		$.ajax({
-			type:'DELETE',
+			method:type,
 			url:that.url,
+			contentType:'application/json',
 			xhrFields: {
 				withCredentials: true
 			},
 			success:function(res){
 				that.setState({
 					likesBtnBlocked: false,
-					liked:false,
-					likesCount:that.state.likesCount-1
+					liked:!that.state.liked,
+					likesCount:that.state.likesCount+incr
 				});
 			}
 		});
 	},
 	render : function(){
-		var likedText = '';
-		if(!this.state.liked){
-			likedText = 'not ';
-		}
 		return(
 			React.createElement("div", {className: "panel panel-info"}, 
 				React.createElement("div", {className: "panel-heading"}, 
@@ -29301,7 +29277,9 @@ var Post = React.createClass({displayName: "Post",
 					React.createElement("div", null, React.createElement("b", null, this.props.data.storyTitle), " ", React.createElement("i", null, this.props.data.owner.name)), 
 					React.createElement("div", null, this.getImage())
 				), 
-				React.createElement("div", {className: "panel-footer", onClick: this.handleLikeClick}, this.state.likesCount, " likes, you ", likedText, " liked")
+				React.createElement("div", {className: "panel-footer"}, 
+					React.createElement("div", {className: "heart", onClick: this.handleLikeClick}), " ", this.state.likesCount
+				)
 			)
 		)
 	}

@@ -11,12 +11,11 @@ var Feed = React.createClass({
 	},
 	componentDidMount: function(){
 		var that = this;
-
 		$.ajax({
 			url:'https://storia.me/api/feed/content',
-
-			data:{
-				token:''
+			method:'GET',
+			xhrFields: {
+				withCredentials: true
 			},
 			success:function(data){
 				that.setState({

@@ -29,13 +29,19 @@ var Post = React.createClass({
 		return <img src={url} className="img-rounded b-post__image"/>
 
 	},
-	handleLikeClick:function(){
+	handleLikeClick:function(e){
+		$this = $(e.target);
 		if(!this.state.likesBtnBlocked){
 			this.setState({likesBtnBlocked: true});
+			$this.css("background-position","");
 			if(this.state.liked){
 				this.deleteLike();
+				$this.removeClass("heartAnimation").removeClass("active");
+				$this.css("background-position","left");
+
 			}else{
 				this.postLike();
+				$this.addClass("heartAnimation").addClass("active");
 			}
 		}
 	},
@@ -47,26 +53,24 @@ var Post = React.createClass({
 	},
 	likeReq:function(type, incr){
 		var that = this;
+		
 		$.ajax({
-			type:type,
+			method:type,
 			url:that.url,
+			contentType:'application/json',
 			xhrFields: {
 				withCredentials: true
 			},
 			success:function(res){
 				that.setState({
 					likesBtnBlocked: false,
-					liked:false,
+					liked:!that.state.liked,
 					likesCount:that.state.likesCount+incr
 				});
 			}
 		});
 	},
 	render : function(){
-		var likedText = '';
-		if(!this.state.liked){
-			likedText = 'not ';
-		}
 		return(
 			<div className="panel panel-info">
 				<div className="panel-heading">
@@ -76,7 +80,9 @@ var Post = React.createClass({
 					<div><b>{this.props.data.storyTitle}</b> <i>{this.props.data.owner.name}</i></div>
 					<div>{this.getImage()}</div>
 				</div>
-				<div className="panel-footer" onClick={this.handleLikeClick}>{this.state.likesCount} likes, you {likedText} liked</div>
+				<div className="panel-footer" >
+					<div className="heart" onClick={this.handleLikeClick}></div> {this.state.likesCount}
+				</div>
 			</div>
 		)
 	}

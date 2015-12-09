@@ -18,14 +18,14 @@ var Box = React.createClass({
 		};
 		$.ajax({
 			url: 'https://storia.me/api/acl/auth/Selfish/test_task@example.com',
-			type:'POST',
+			method:'POST',
             dataType:"json",
 			data:JSON.stringify(loginData),
 			contentType:'application/json',
-			success:function(data){
-				cookies.set('userId', data.userId);
-				cookies.set('SSID', data.sessionId);
-				cookies.set('accountId', data.accountId);
+			xhrFields: {
+				withCredentials: true
+			},
+			success:function(){
 				that.setState({authorized:true});
 			}
 		})
