@@ -8,13 +8,17 @@
 }
 
 .panel-footer{
-	padding-left: 0;
+	padding:0;
+	i{
+		padding: 15px 0;
+		display: block;
+	}
 }
 .heart {
 	background: url(../img/web_heart_animation.png);
 	background-position: left;
 	background-repeat: no-repeat;
-	height: 20px;
+	height: 50px;
 	width: 50px;
 	cursor: pointer;
 	background-size:2900%;

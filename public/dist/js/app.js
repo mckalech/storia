@@ -29336,7 +29336,7 @@ var Post = React.createClass({displayName: "Post",
 				), 
 				React.createElement("div", {className: "panel-footer"}, 
 					React.createElement("div", {className: classes, style: style, onClick: this.handleLikeClick}), 
-					this.state.likesCount
+					React.createElement("i", null, this.state.likesCount)
 				)
 			)
 		)

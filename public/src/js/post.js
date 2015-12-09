@@ -94,7 +94,7 @@ var Post = React.createClass({
 				</div>
 				<div className="panel-footer" >
 					<div className={classes} style={style} onClick={this.handleLikeClick}></div>
-					{this.state.likesCount}
+					<i>{this.state.likesCount}</i>
 				</div>
 			</div>
 		)
