@@ -30401,12 +30401,54 @@ module.exports = Feed;
 },{"./modal":340,"./post":341,"React":156,"jQuery":159}],340:[function(require,module,exports){
 var React = require('React'),
 	M = require('react-modal-bootstrap'),
+	$ = require('jQuery'),
 	Modal = M.Modal,
 	ModalClose = M.ModalClose;
 
 var Mod = React.createClass({displayName: "Mod",
+	getInitialState:function(){
+		return {
+			text: "",
+			attachments: []
+		};
+	},
 	hideModal: function(){
 		this.props.hideModal();
+	},
+	componentWillReceiveProps:function(nextProps){
+		this.setState({
+			text:'загрузка',
+			attachments:[]
+		});
+		$.ajax({
+			url: nextProps.data.url,
+			method:'GET',
+			xhrFields: {
+				withCredentials: true
+			},
+			success:function(data){
+				this.setState({
+					text:'a',
+					attachments:data.moment.attachments
+				});
+			}.bind(this)
+		});
+	},
+	getImage: function(atts){
+		var url;
+		if(!atts.length){
+			return 'No Image';
+		}
+		var images = atts.filter(function(att, i){
+			return att.file.title.match(/\d+/g) ? false : true;
+		});
+		if(images.length){
+			url = images[images.length-1].file.path;
+		}else{
+			url = atts[atts.length-1].file.path;
+		}
+		return React.createElement("img", {src: url, className: "img-rounded b-post__image"})
+
 	},
 	render: function(){
 		return(
@@ -30416,7 +30458,8 @@ var Mod = React.createClass({displayName: "Mod",
 					React.createElement("h4", {className: "modal-title"}, this.props.data.title)
 				), 
 				React.createElement("div", {className: "modal-body"}, 
-					this.props.data.url
+					this.state.text, 
+					React.createElement("div", null, this.getImage(this.state.attachments))
 				), 
 				React.createElement("div", {className: "modal-footer"}, 
 					React.createElement("button", {className: "btn btn-default", onClick: this.hideModal}, 
@@ -30432,7 +30475,7 @@ var Mod = React.createClass({displayName: "Mod",
 });
 
 module.exports = Mod;
-},{"React":156,"react-modal-bootstrap":163}],341:[function(require,module,exports){
+},{"React":156,"jQuery":159,"react-modal-bootstrap":163}],341:[function(require,module,exports){
 var React = require('React'),
 	$ = require('jQuery'),
 	classNames = require('classNames');
