@@ -1,5 +1,6 @@
 var React = require('React'),
-	$ = require('jQuery');
+	$ = require('jQuery'),
+	classNames = require('classNames');
 
 var Post = React.createClass({
 	getInitialState: function(){
@@ -33,15 +34,10 @@ var Post = React.createClass({
 		$this = $(e.target);
 		if(!this.state.likesBtnBlocked){
 			this.setState({likesBtnBlocked: true});
-			$this.css("background-position","");
 			if(this.state.liked){
 				this.deleteLike();
-				$this.removeClass("heartAnimation").removeClass("active");
-				$this.css("background-position","left");
-
 			}else{
 				this.postLike();
-				$this.addClass("heartAnimation").addClass("active");
 			}
 		}
 	},
@@ -53,7 +49,10 @@ var Post = React.createClass({
 	},
 	likeReq:function(type, incr){
 		var that = this;
-		
+		that.setState({
+			liked:!that.state.liked,
+			likesCount:that.state.likesCount+incr
+		});
 		$.ajax({
 			method:type,
 			url:that.url,
@@ -61,27 +60,41 @@ var Post = React.createClass({
 			xhrFields: {
 				withCredentials: true
 			},
-			success:function(res){
+			success:function(){
+				that.setState({
+					likesBtnBlocked: false
+				});
+			},
+			error:function(){
 				that.setState({
 					likesBtnBlocked: false,
 					liked:!that.state.liked,
-					likesCount:that.state.likesCount+incr
+					likesCount:that.state.likesCount-incr
 				});
 			}
 		});
 	},
 	render : function(){
+		var classes = classNames({
+			'heart': true,
+			'heartAnimation': this.state.liked,
+			'active': this.state.liked
+		});
+		var style={
+			backgroundPosition : ""
+		};
+		var headingPanel = this.props.data.title ? (<div className="panel-heading"><h3 className="panel-title">{this.props.data.title}</h3></div>): "";
+		if (!this.state.liked) {style.backgroundPosition = 'left';}
 		return(
 			<div className="panel panel-info">
-				<div className="panel-heading">
-					<h3 className="panel-title">{this.props.data.title}</h3>
-				</div>
+				{headingPanel}
 				<div className="panel-body">
 					<div><b>{this.props.data.storyTitle}</b> <i>{this.props.data.owner.name}</i></div>
 					<div>{this.getImage()}</div>
 				</div>
 				<div className="panel-footer" >
-					<div className="heart" onClick={this.handleLikeClick}></div> {this.state.likesCount}
+					<div className={classes} style={style} onClick={this.handleLikeClick}></div>
+					{this.state.likesCount}
 				</div>
 			</div>
 		)
