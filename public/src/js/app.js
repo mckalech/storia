@@ -1,6 +1,7 @@
 var $ = require('jQuery'),
+ReactDOM = require('react-dom'),
 React = require('React'),
 Box = require('./box');
 
 
-React.render(<Box />,$('#content').get(0));
+ReactDOM.render(<Box />,$('#content').get(0));

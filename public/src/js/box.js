@@ -1,8 +1,6 @@
 var $ = require('jQuery'),
 	React = require('React'),
-	Feed = require('./feed'),
-	cookies = require('browser-cookies');
-
+	Feed = require('./feed');
 var Box = React.createClass({
 	getInitialState: function(){
 		return {

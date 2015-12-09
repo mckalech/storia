@@ -30,8 +30,7 @@ var Post = React.createClass({
 		return <img src={url} className="img-rounded b-post__image"/>
 
 	},
-	handleLikeClick:function(e){
-		$this = $(e.target);
+	handleLikeClick:function(){
 		if(!this.state.likesBtnBlocked){
 			this.setState({likesBtnBlocked: true});
 			if(this.state.liked){
@@ -74,6 +73,10 @@ var Post = React.createClass({
 			}
 		});
 	},
+	hadleStoryTitleClick: function(){
+		var url = "https://storia.me/api/core/stories/"+this.props.data.storyId+'/moments/'+this.props.data.id;
+		this.props.showModal(url, this.props.data.title);
+	},
 	render : function(){
 		var classes = classNames({
 			'heart': true,
@@ -89,7 +92,7 @@ var Post = React.createClass({
 			<div className="panel panel-info">
 				{headingPanel}
 				<div className="panel-body">
-					<div><b>{this.props.data.storyTitle}</b> <i>{this.props.data.owner.name}</i></div>
+					<div><b onClick={this.hadleStoryTitleClick}>{this.props.data.storyTitle}</b> <i>{this.props.data.owner.name}</i></div>
 					<div>{this.getImage()}</div>
 				</div>
 				<div className="panel-footer" >
