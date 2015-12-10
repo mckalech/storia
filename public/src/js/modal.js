@@ -8,43 +8,47 @@ var React = require('React'),
 var Mod = React.createClass({
 	getInitialState:function(){
 		return {
+			isOpen:true,
 			attachments: []
 		};
 	},
 	hideModal: function(){
-		this.props.hideModal();
+		this.setState({
+			isOpen: false
+		});
+		this.props.history.pushState(null, '/');
 	},
-	componentWillReceiveProps:function(nextProps){
-		if(nextProps.isOpen == false){
-			return;
-		}else{
-			this.setState({
-				attachments:[]
-			});
-			$.ajax({
-				url: nextProps.data.url,
-				method:'GET',
-				xhrFields: {
-					withCredentials: true
-				},
-				success:function(data){
-					this.setState({
-						storyTitle: data.moment.storyTitle,
-						owner: data.moment.owner.name,
-						attachments: data.moment.attachments
-					});
-				}.bind(this)
-			});
-		}
+	componentDidMount:function(){
+
+		this.setState({
+			attachments:[]
+		});
+		var url = "https://storia.me/api/core/stories/"+this.props.params.storyId+'/moments/'+this.props.params.id;
+		$.ajax({
+			url: url,
+			method:'GET',
+			xhrFields: {
+				withCredentials: true
+			},
+			success:function(data){
+				this.setState({
+					title: data.moment.title,
+					storyTitle: data.moment.storyTitle,
+					owner: data.moment.owner.name,
+					attachments: data.moment.attachments
+				});
+			}.bind(this)
+		});
+
 
 	},
 
 	render: function(){
 		return(
-			<Modal isOpen={this.props.isOpen} onRequestHide={this.hideModal}>
+			<Modal isOpen={this.state.isOpen} onRequestHide={this.hideModal}>
 				<div className='modal-header'>
 					<ModalClose onClick={this.hideModal}/>
-					<h4 className='modal-title'>{this.props.data.title}</h4>
+					<h4 className='modal-title'>{this.state.title}</h4>
 				</div>
 				<div className='modal-body'>
 					<div>

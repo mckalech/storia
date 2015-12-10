@@ -1,14 +1,11 @@
 var React = require('React'),
 	$ = require('jQuery'),
-	Post = require('./post'),
-	Modal = require('./modal');
+	Post = require('./post');
 
 var Feed = React.createClass({
 	getInitialState: function(){
 		return {
-			loaded: false,
-			modalIsOpen: false,
-			modalData:{}
+			loaded: false
 		};
 	},
 	componentDidMount: function(){
@@ -28,20 +25,6 @@ var Feed = React.createClass({
 		});
 
 	},
-	hideModal:function(){
-		this.setState({
-			modalIsOpen:false
-		});
-	},
-	showModal: function(url, title){
-		this.setState({
-			modalIsOpen:true,
-			modalData:{
-				url:url,
-				title:title
-			}
-		});
-	},
 	render : function(){
 		if(this.state.loaded){
 			var feed = [];
@@ -55,8 +38,9 @@ var Feed = React.createClass({
 					<div className="b-feed col-md-5">
 						{feed}
 					</div>
-					<Modal data={this.state.modalData} isOpen={this.state.modalIsOpen} hideModal={this.hideModal} />
+					{this.props.children}
 				</div>
+
 			);
 		}else{
 			return(

@@ -30,7 +30,7 @@ var Box = React.createClass({
 	},
 	render : function(){
 		if(this.state.authorized){
-			return (<Feed />)
+			return (<Feed children={this.props.children}/>)
 		}else{
 			return(
 				<span>loging in</span>

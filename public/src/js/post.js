@@ -2,6 +2,7 @@ var React = require('React'),
 	$ = require('jQuery'),
 	Image = require('./image'),
 	classNames = require('classNames');
+var Link = require('react-router').Link;
 
 var Post = React.createClass({
 	getInitialState: function(){
@@ -57,10 +58,6 @@ var Post = React.createClass({
 			}
 		});
 	},
-	handleStoryTitleClick: function(){
-		var url = "https://storia.me/api/core/stories/"+this.props.data.storyId+'/moments/'+this.props.data.id;
-		this.props.showModal(url, this.props.data.title);
-	},
 	render : function(){
 		var classes = classNames({
 			'heart': true,
@@ -73,20 +70,21 @@ var Post = React.createClass({
 		var headingPanel = "";
 		if (this.props.data.title) {
 			headingPanel = (
-				<div className="panel-heading" onClick={this.handleStoryTitleClick}>
+				<div className="panel-heading" >
 					<h3 className="panel-title">{this.props.data.title}</h3>
 				</div>
 			);
 		}
+		var url = "/post/"+this.props.data.storyId+'/'+this.props.data.id;
 		if (!this.state.liked) {style.backgroundPosition = 'left';}
 		return(
 			<div className="panel panel-info">
 				{headingPanel}
-				<div className="panel-body" onClick={this.handleStoryTitleClick}>
-					<div>
-						История: <b>{this.props.data.storyTitle}</b>
-					</div>
-					Автор: <i>{this.props.data.owner.name}</i>
+				<div className="panel-body">
+					<Link to={url}>
+						История: <b>{this.props.data.storyTitle}</b><br/>
+						Автор: <i>{this.props.data.owner.name}</i>
+					</Link>
 					<Image attachments={this.props.data.attachments} />
 				</div>
 				<div className="panel-footer" >
