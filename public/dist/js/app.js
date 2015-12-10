@@ -35084,9 +35084,12 @@ var Mod = React.createClass({displayName: "Mod",
 	},
 	hideModal: function(){
 		this.setState({
-			isOpen: false
-		});
-		this.props.history.pushState(null, '/');
+				isOpen: false
+			});
+		setTimeout(function(){
+			this.props.history.pushState(null, '/');
+		}.bind(this),0);
+
 	},
 	componentDidMount:function(){
 
