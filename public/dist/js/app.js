@@ -35027,7 +35027,7 @@ var Feed = React.createClass({displayName: "Feed",
 			}.bind(this));
 			return (
 				React.createElement("div", {className: "row"}, 
-					React.createElement("div", {className: "b-feed col-md-5"}, 
+					React.createElement("div", {className: "b-feed col-md-6"}, 
 						feed
 					), 
 					this.props.children
