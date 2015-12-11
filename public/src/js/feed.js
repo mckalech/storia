@@ -25,6 +25,9 @@ var Feed = React.createClass({
 		});
 
 	},
+	componentWillReceiveProps: function(){
+		console.log('props changed');
+	},
 	render : function(){
 		if(this.state.loaded){
 			var feed = [];
@@ -35,7 +38,7 @@ var Feed = React.createClass({
 			}.bind(this));
 			return (
 				<div className="row">
-					<div className="b-feed col-md-5">
+					<div className="b-feed col-md-6">
 						{feed}
 					</div>
 					{this.props.children}

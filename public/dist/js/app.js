@@ -35014,6 +35014,9 @@ var Feed = React.createClass({displayName: "Feed",
 		});
 
 	},
+	componentWillReceiveProps: function(){
+		console.log('props changed');
+	},
 	render : function(){
 		if(this.state.loaded){
 			var feed = [];
