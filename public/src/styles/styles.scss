@@ -6,8 +6,7 @@ body{
 
 .b-feed{
 	margin: auto;
-	padding: 50px 0;
-	max-width: 650px;
+	padding: 50px 20px;
 	float: none !important;
 }
 .b-card{
@@ -28,13 +27,7 @@ body{
 .modal-title{
 	min-height: 25px;
 }
-.panel-footer{
-	padding:0;
-	i{
-		padding: 15px 0;
-		display: block;
-	}
-}
+
 .heart {
 	background: url(../img/web_heart_animation.png);
 	background-position: left;
