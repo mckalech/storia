@@ -58,7 +58,8 @@ var Mod = React.createClass({
 						История: <b>{this.state.storyTitle}</b>
 					</div>
 					Автор: <i>{this.state.owner}</i>
-					<Image attachments={this.state.attachments} />
+					<Image attachments={this.state.attachments}
+						title={this.state.title }/>
 				</div>
 			</Modal>
 		)

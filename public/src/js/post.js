@@ -80,13 +80,14 @@ var Post = React.createClass({
 			headingOpts = {
 				title:this.props.data.title,
 				subtitle: "Story: "+this.props.data.storyTitle+" Author: " + this.props.data.owner.name,
-				avatar:<Avatar>A</Avatar>
+				avatar: <Avatar src={this.props.data.owner.avatar.path}/>
 			};
 		}else{
 			headingOpts = {
 				title: "Story: "+this.props.data.storyTitle,
 				subtitle: "Author: " + this.props.data.owner.name,
-				avatar:<Avatar>B</Avatar>
+				avatar: <Avatar>B</Avatar>
+
 			};
 		}
 

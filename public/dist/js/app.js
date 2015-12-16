@@ -40907,9 +40907,12 @@ var Image = React.createClass({displayName: "Image",
 		}else{
 			url = atts[atts.length-1].file.path;
 		}
+		var props = {};
+		if(this.props.title){
+			props.overlay = React.createElement(CardTitle, {title: this.props.title});
+		}
 		return(
-			React.createElement(CardMedia, {
-				overlay: React.createElement(CardTitle, {title: this.props.title})}, 
+			React.createElement(CardMedia, React.__spread({},  props), 
 			    React.createElement("img", {src: url, className: "b-card__image"})
 			)
 
@@ -40979,7 +40982,8 @@ var Mod = React.createClass({displayName: "Mod",
 						"История: ", React.createElement("b", null, this.state.storyTitle)
 					), 
 					"Автор: ", React.createElement("i", null, this.state.owner), 
-					React.createElement(Image, {attachments: this.state.attachments})
+					React.createElement(Image, {attachments: this.state.attachments, 
+						title: this.state.title})
 				)
 			)
 		)
@@ -41070,13 +41074,14 @@ var Post = React.createClass({displayName: "Post",
 			headingOpts = {
 				title:this.props.data.title,
 				subtitle: "Story: "+this.props.data.storyTitle+" Author: " + this.props.data.owner.name,
-				avatar:React.createElement(Avatar, null, "A")
+				avatar: React.createElement(Avatar, {src: this.props.data.owner.avatar.path})
 			};
 		}else{
 			headingOpts = {
 				title: "Story: "+this.props.data.storyTitle,
 				subtitle: "Author: " + this.props.data.owner.name,
-				avatar:React.createElement(Avatar, null, "B")
+				avatar: React.createElement(Avatar, null, "B")
+
 			};
 		}
 

@@ -17,9 +17,12 @@ var Image = React.createClass({
 		}else{
 			url = atts[atts.length-1].file.path;
 		}
+		var props = {};
+		if(this.props.title){
+			props.overlay = <CardTitle title={this.props.title}/>;
+		}
 		return(
-			<CardMedia
-				overlay={<CardTitle title={this.props.title}/>}>
+			<CardMedia {...props}>
 			    <img src={url} className="b-card__image"/>
 			</CardMedia>
 
