@@ -3,6 +3,11 @@ var React = require('React'),
 	Image = require('./image'),
 	classNames = require('classNames');
 var Link = require('react-router').Link;
+const Card = require('material-ui/lib/card/card');
+const CardHeader = require('material-ui/lib/card/card-header');
+const CardText = require('material-ui/lib/card/card-text');
+const CardTitle = require('material-ui/lib/card/card-title');
+const Avatar = require('material-ui/lib/avatar');
 
 var Post = React.createClass({
 	getInitialState: function(){
@@ -67,30 +72,40 @@ var Post = React.createClass({
 		var style={
 			backgroundPosition : ""
 		};
-		var headingPanel = "";
-		if (this.props.data.title) {
-			headingPanel = (
-				<div className="panel-heading" >
-					<h3 className="panel-title">{this.props.data.title}</h3>
-				</div>
-			);
-		}
 		var url = "/post/"+this.props.data.storyId+'/'+this.props.data.id;
 		if (!this.state.liked) {style.backgroundPosition = 'left';}
+
+		var headingOpts = {};
+		if (this.props.data.title) {
+			headingOpts = {
+				title:this.props.data.title,
+				subtitle: "Story: "+this.props.data.storyTitle+" Author: " + this.props.data.owner.name,
+				avatar:<Avatar>A</Avatar>
+			};
+		}else{
+			headingOpts = {
+				title: "Story: "+this.props.data.storyTitle,
+				subtitle: "Author: " + this.props.data.owner.name,
+				avatar:<Avatar>B</Avatar>
+			};
+		}
+
+
 		return(
-			<div className="panel panel-info">
-				{headingPanel}
-				<div className="panel-body">
+			<div className="b-card">
+				<Card>
 					<Link to={url}>
-						История: <b>{this.props.data.storyTitle}</b><br/>
-						Автор: <i>{this.props.data.owner.name}</i>
+						<CardHeader title={headingOpts.title.substring(0,50)}
+				            avatar={headingOpts.avatar}
+				            subtitle={headingOpts.subtitle}/>
+						<Image attachments={this.props.data.attachments}
+					        title={headingOpts.title } />
 					</Link>
-					<Image attachments={this.props.data.attachments} />
-				</div>
-				<div className="panel-footer" >
-					<div className={classes} style={style} onClick={this.handleLikeClick}></div>
-					<i>{this.state.likesCount}</i>
-				</div>
+					<div className="b-card__footer" >
+						<div className={classes} style={style} onClick={this.handleLikeClick}></div>
+						<i>{this.state.likesCount}</i>
+					</div>
+				</Card>
 			</div>
 		)
 	}

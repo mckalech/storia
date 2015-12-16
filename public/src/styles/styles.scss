@@ -1,17 +1,29 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
+
 body{
 	background: #3d3d3c;
 }
+
 .b-feed{
 	margin: auto;
 	padding: 50px 0;
+	max-width: 650px;
 	float: none !important;
 }
-.b-post__image{
-	width: 100%;
-	margin-top: 20px;
+.b-card{
+	margin-bottom: 20px;
 }
-.panel-body, .panel-heading{
-	cursor: pointer;
+.b-card__image{
+	width: 100%;
+}
+.b-card__footer{
+	background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+	padding:0;
+	i{
+		padding: 15px 0;
+		display: block;
+	}
 }
 .modal-title{
 	min-height: 25px;

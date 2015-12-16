@@ -1,6 +1,7 @@
 var $ = require('jQuery'),
 	React = require('React'),
 	Feed = require('./feed');
+const RefreshIndicator = require('material-ui/lib/refresh-indicator');
 var Box = React.createClass({
 	getInitialState: function(){
 		return {
@@ -33,7 +34,7 @@ var Box = React.createClass({
 			return (<Feed children={this.props.children}/>)
 		}else{
 			return(
-				<span>loging in</span>
+				<RefreshIndicator status="loading" left={0} top={0} />
 			)
 		}
 	}

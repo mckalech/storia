@@ -1,4 +1,6 @@
 var React = require('React');
+const CardMedia = require('material-ui/lib/card/card-media');
+const CardTitle = require('material-ui/lib/card/card-title');
 
 var Image = React.createClass({
 	render: function(){
@@ -16,7 +18,11 @@ var Image = React.createClass({
 			url = atts[atts.length-1].file.path;
 		}
 		return(
-			<div><img src={url} className="img-rounded b-post__image"/></div>
+			<CardMedia
+				overlay={<CardTitle title={this.props.title}/>}>
+			    <img src={url} className="b-card__image"/>
+			</CardMedia>
+
 		)
 	}
 });
